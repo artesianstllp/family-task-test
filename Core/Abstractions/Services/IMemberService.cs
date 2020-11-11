@@ -1,10 +1,6 @@
-﻿using Domain.Commands;
+﻿using System.Threading.Tasks;
+using Domain.Commands;
 using Domain.Queries;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Abstractions.Services
 {

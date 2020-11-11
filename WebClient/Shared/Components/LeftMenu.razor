@@ -1,9 +1,12 @@
 @using Core.Extensions.ModelConversion
 @using Domain.ClientSideModels
-
+@using WebClient.Abstractions
+@using WebClient.Services
 @namespace WebClient.Shared.Components
 
-@inject WebClient.Abstractions.IMemberDataService memberService
+@inject IMemberDataService _memberService
+@inject ITaskDataService _taskService
+@inject DragAndDropService _dragAndDropService
 <style>
     .menu-wrapper {
         background: #FBFBFB;
@@ -11,37 +14,54 @@
         overflow-y: auto;
         height: 100%;
     }
-    .menu-wrapper .menu-item {
-        background: #FFFFFF;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.12);
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        border: 3px solid #FFFFFF;
+
+        .menu-wrapper .menu-item {
+            background: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border: 3px solid #FFFFFF;
+        }
+
+            .menu-wrapper .menu-item.active {
+                border: 3px solid #CC1778;
+            }
+
+        .menu-wrapper .add-menu-item {
+            border: 1px dashed #000000;
+            box-sizing: border-box;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.12));
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .menu-wrapper .add-menu-item a {
+                color: inherit;
+                text-decoration: inherit;
+            }
+
+    a, a:hover, a:focus, a:active {
+        text-decoration: none;
+        color: inherit;
     }
-    .menu-wrapper .menu-item.active {
-        border: 3px solid #CC1778;
-    }
-    .menu-wrapper .add-menu-item {
-        border: 1px dashed #000000;
-        box-sizing: border-box;
-        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.12));
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+
     .add-menu-item .fa {
         font-size: 12px;
+        color: black;
     }
+
     .menu-wrapper .label {
         color: #000000;
         font-family: "Poppins Regular";
         font-size: 24px;
         line-height: 36px;
     }
+
     .menu-wrapper .avtar {
         width: 32px;
         height: 32px;
@@ -53,11 +73,13 @@
             font-size: 16px;
             line-height: 24px;
         }
+
         .menu-wrapper .avtar {
             width: 24px;
             height: 24px;
         }
     }
+
     @@media(max-width: 767.98px) {
         .menu-wrapper .avtar {
             width: 16px;
@@ -67,32 +89,41 @@
 </style>
 
 <div class="menu-wrapper col-12 p-0">
-    @if(MenuItems != null && MenuItems.Length > 0) {
-        @foreach (var item in MenuItems) {
-            <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => SelectMember(item.referenceId))">
-                @if(item.iconColor != null) {
-                    <div class="avtar mr-3" style="background-color: @(item.iconColor);"> </div>
-                }
-                <div class="label"> @item.label </div>
+    <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2" @onclick="@(e=>SelectMember(Guid.Empty))">
+        <a href="manage-tasks">All Tasks</a>
+    </div>
+
+    @if (MenuItems != null && MenuItems.Length > 0)
+    {
+        @foreach (var menuItem in MenuItems)
+        {
+            <div ondragover="event.preventDefault()" @ondrop="(e=> SetAssigned(menuItem.referenceId))">
+                <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(menuItem.isActive ? "active" : "")" @onclick="@(e => SelectMember(menuItem.referenceId))">
+                    @if (menuItem.iconColor != null)
+                    {
+                        <div class="avtar mr-3" style="background-color: @(menuItem.iconColor);"> </div>
+                    }
+                    <div class="label"> @menuItem.label </div>
+                </div>
             </div>
         }
     }
-    
-    <div class="add-menu-item label col-10 offset-1 p-3 my-4 p-sm-2" @onclick="@OnAddItem">
-        <span class="fa fa-plus"></span> &nbsp; Add Member
+
+    <div class="menu-item add-menu-item col-10 offset-1 p-3  my-4 p-sm-2"@onclick="@(e=>SelectMember(Guid.Empty))">
+        <a href="members"><span class="fa fa-plus"></span> &nbsp; Add Member</a>
     </div>
 </div>
 
 @code {
     protected override Task OnInitializedAsync()
     {
-        MenuItems = memberService.Members.ToMenuItems();
-        memberService.MembersChanged += MemberServiceOnMembersChanged;
-        memberService.SelectedMemberChanged += MemberServiceOnSelectedMemberChanged;
+        MenuItems = _memberService.Members.ToMenuItems();
+        _memberService.MembersChanged += MemberServiceOnMembersChanged;
+        _memberService.SelectedMemberChanged += MemberServiceOnSelectedMemberChanged;
 
-        if (memberService.SelectedMember != null)
+        if (_memberService.SelectedMember != null)
         {
-            SetActiveItem(memberService.SelectedMember.Id);
+            SetActiveItem(_memberService.SelectedMember.Id);
         }
 
         return base.OnInitializedAsync();
@@ -101,18 +132,18 @@
     private void MemberServiceOnSelectedMemberChanged(object sender, EventArgs e)
     {
         InactivateAllItems();
-        if(memberService.SelectedMember != null)
-            SetActiveItem(memberService.SelectedMember.Id);
+        if (_memberService.SelectedMember != null)
+            SetActiveItem(_memberService.SelectedMember.Id);
         StateHasChanged();
     }
 
     private void MemberServiceOnMembersChanged(object sender, EventArgs e)
     {
-        MenuItems = memberService.Members.ToMenuItems();
+        MenuItems = _memberService.Members.ToMenuItems();
         StateHasChanged();
     }
 
-    [Parameter] public MenuItem[] MenuItems {get; set;}
+    [Parameter] public MenuItem[] MenuItems { get; set; }
 
     private void InactivateAllItems()
     {
@@ -133,14 +164,34 @@
         }
     }
 
-    void SelectMember(Guid id)
+    void SelectMember(Guid memberId)
     {
-        memberService.SelectMember(id);
+        if (memberId == Guid.Empty)
+        {
+            _memberService.SelectNullMember();
+        }
+        else
+        {
+            _memberService.SelectMember(memberId);
+        }
+
     }
 
-    private void OnAddItem()
+    private void OnAddMember()
     {
-        memberService.SelectNullMember();
+        _memberService.SelectNullMember();
+    }
+
+
+    private  void SetAssigned(Guid memberId)
+    {
+        var taskDetails = _dragAndDropService.Data;
+        if (memberId != null && taskDetails != null)
+        {
+            taskDetails.AssignedToId = memberId;
+            _taskService.UpdateTask(taskDetails);
+            StateHasChanged();
+        }
     }
 
 }

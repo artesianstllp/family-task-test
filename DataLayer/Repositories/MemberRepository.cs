@@ -1,17 +1,12 @@
-﻿using Core.Abstractions.Repositories;
+﻿using System;
+using Core.Abstractions.Repositories;
 using Domain.DataModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DataLayer
 {
     public class MemberRepository : BaseRepository<Guid, Member, MemberRepository>, IMemberRepository
     {
-        public MemberRepository(FamilyTaskContext context) : base(context)
-        { }
-
-       
+        public MemberRepository(FamilyTaskContext context) : base(context) { }
 
         IMemberRepository IBaseRepository<Guid, Member, IMemberRepository>.NoTrack()
         {
@@ -22,7 +17,5 @@ namespace DataLayer
         {
             return base.Reset();
         }
-
-       
     }
 }

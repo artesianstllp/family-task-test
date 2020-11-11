@@ -2,10 +2,8 @@
 using Core.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,7 +46,7 @@ namespace DataLayer
             return await
                 Query.ToListAsync(cancellationToken);
         }
-      
+
         public TRepository NoTrack()
         {
             Query.AsNoTracking();
@@ -128,6 +126,4 @@ namespace DataLayer
             return await Query.FirstOrDefaultAsync(cancellationToken);
         }
     }
-
-
 }

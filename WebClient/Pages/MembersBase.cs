@@ -1,17 +1,15 @@
-﻿using Domain.ViewModel;
-using Microsoft.AspNetCore.Components;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Domain.ViewModel;
+using Microsoft.AspNetCore.Components;
 using WebClient.Abstractions;
 
 namespace WebClient.Pages
 {
-    public class MembersBase: ComponentBase
-    {       
+    public class MembersBase : ComponentBase
+    {
         protected List<MemberVm> members = new List<MemberVm>();
         protected List<MenuItem> leftMenuItem = new List<MenuItem>();
 
@@ -20,7 +18,7 @@ namespace WebClient.Pages
 
         [Inject]
         public IMemberDataService MemberDataService { get; set; }
-        
+
         protected override async Task OnInitializedAsync()
         {
             UpdateMembers();
@@ -58,22 +56,24 @@ namespace WebClient.Pages
             {
                 leftMenuItem.Add(new MenuItem
                 {
-                    iconColor = members[i].Avatar,
-                    label = members[i].FirstName,
-                    referenceId = members[i].Id
+                    IconColor = members[i].Avatar,
+                    Label = members[i].FirstName,
+                    ReferenceId = members[i].Id
                 });
             }
         }
-       
+
+        // Naming conventions not followed for this existing method
         protected void onAddItem()
         {
             showCreator = true;
             StateHasChanged();
         }
 
+        // Naming conventions not followed for this existing method
         protected void onMemberAdd(MemberVm familyMember)
         {
-            MemberDataService.CreateMember(familyMember);            
+            MemberDataService.CreateMember(familyMember);
         }
 
     }

@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
-using Domain.Commands;
+using DataLayer;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebApi.AutoMapper;
 
 namespace WebApi
@@ -23,7 +19,7 @@ namespace WebApi
             services.AddMvc().AddFluentValidation(fv =>
                 fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
-            services.AddDbContext<DataLayer.FamilyTaskContext>(options =>
+            services.AddDbContext<FamilyTaskContext>(options =>
             {
                 options.UseSqlServer(configuration.GetSection("ConnectionStrings:SqlDb").Value);
             });

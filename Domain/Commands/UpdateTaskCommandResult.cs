@@ -1,6 +1,6 @@
 ﻿namespace Domain.Commands
 {
-    public class UpdateMemberCommandResult
+    public class UpdateTaskCommandResult
     {
         public bool Succeed { get; set; }
     }

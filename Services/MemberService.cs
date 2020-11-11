@@ -1,15 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Core.Abstractions.Repositories;
 using Core.Abstractions.Services;
 using Domain.Commands;
 using Domain.DataModels;
 using Domain.Queries;
 using Domain.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -31,25 +29,26 @@ namespace Services
 
             var vm = _mapper.Map<MemberVm>(persistedMember);
 
-            return new CreateMemberCommandResult()
+            return new CreateMemberCommandResult
             {
                 Payload = vm
             };
         }
-        
+
         public async Task<UpdateMemberCommandResult> UpdateMemberCommandHandler(UpdateMemberCommand command)
         {
             var isSucceed = true;
             var member = await _memberRepository.ByIdAsync(command.Id);
 
-            _mapper.Map<UpdateMemberCommand,Member>(command, member);
-            
+            _mapper.Map(command, member);
+
             var affectedRecordsCount = await _memberRepository.UpdateRecordAsync(member);
 
             if (affectedRecordsCount < 1)
                 isSucceed = false;
 
-            return new UpdateMemberCommandResult() { 
+            return new UpdateMemberCommandResult
+            {
                Succeed = isSucceed
             };
         }
@@ -63,7 +62,8 @@ namespace Services
             if (members != null && members.Any())
                 vm = _mapper.Map<IEnumerable<MemberVm>>(members);
 
-            return new GetAllMembersQueryResult() { 
+            return new GetAllMembersQueryResult
+            {
                 Payload = vm
             };
         }

@@ -1,19 +1,16 @@
-﻿using Domain.Commands;
-using Domain.ViewModel;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Domain.ClientSideModels;
-using Domain.DataModels;
+using Domain.Commands;
+using Domain.ViewModel;
 
 namespace Core.Extensions.ModelConversion
 {
-    public static class ModelConversionExtensions
+	public static class ModelConversionExtensions
     {
         public static CreateMemberCommand ToCreateMemberCommand(this MemberVm model)
         {
-            var command = new CreateMemberCommand()
+            var command = new CreateMemberCommand
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -26,7 +23,7 @@ namespace Core.Extensions.ModelConversion
 
         public static MenuItem[] ToMenuItems(this IEnumerable<MemberVm> models)
         {
-            return models.Select(m => new MenuItem()
+            return models.Select(m => new MenuItem
             {
                 iconColor = m.Avatar,
                 isActive = false,
@@ -37,7 +34,7 @@ namespace Core.Extensions.ModelConversion
 
         public static UpdateMemberCommand ToUpdateMemberCommand(this MemberVm model)
         {
-            var command = new UpdateMemberCommand()
+            var command = new UpdateMemberCommand
             {
                 Id = model.Id,
                 FirstName = model.FirstName,
@@ -45,6 +42,29 @@ namespace Core.Extensions.ModelConversion
                 Roles = model.Roles,
                 Avatar = model.Avatar,
                 Email = model.Email
+            };
+            return command;
+        }
+
+        public static CreateTaskCommand ToCreateTaskCommand(this TaskVm model)
+        {
+            var command = new CreateTaskCommand
+            {
+                AssignedToId = model.AssignedToId,
+                Subject = model.Subject,
+                IsComplete = model.IsComplete
+            };
+            return command;
+        }
+
+        public static UpdateTaskCommand ToUpdateTaskCommand(this TaskVm model)
+        {
+            var command = new UpdateTaskCommand
+            {
+                Id = model.Id,
+                AssignedToId = model.AssignedToId,
+                Subject = model.Subject,
+                IsComplete = model.IsComplete
             };
             return command;
         }

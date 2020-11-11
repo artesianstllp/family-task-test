@@ -1,22 +1,21 @@
 using System;
 
+// Class memeber updated for naming convention related changes.
 public class MenuItem
 {
-    public bool isActive {get; set;}
-    public string iconColor { get; set; }
-    public string label { get; set; }
-    public Guid referenceId { get; set; }
-    
+    public bool IsActive { get; set; }
+    public string IconColor { get; set; }
+    public string Label { get; set; }
+    public Guid ReferenceId { get; set; }
+
     protected virtual void OnClickCallback(object e)
     {
         EventHandler<object> handler = ClickCallback;
-        if (handler != null)
-        {
-            handler(this, e);
-        }
+        handler?.Invoke(this, e);
     }
     public event EventHandler<object> ClickCallback;
-    public void InvokClickCallback(object e) {
+    public void InvokeClickCallback(object e)
+    {
         OnClickCallback(e);
     }
 }

@@ -18,7 +18,7 @@
         line-height: 36px;
         font-family: "Poppins Light";
     }
-    .create-wrapper .avtar {
+    .create-wrapper .avatar {
         width: 48px;
         height: 48px;
         border-radius: 50%;
@@ -34,7 +34,7 @@
             font-size: 16px;
             line-height: 24px;
         }
-        .create-wrapper .avtar {
+        .create-wrapper .avatar {
             width: 32px;
             height: 32px;
         }
@@ -44,7 +44,7 @@
             font-size: 16px;
             line-height: 24px;
         }
-        .create-wrapper .avtar {
+        .create-wrapper .avatar {
             width: 16px;
             height: 16px;
         }
@@ -78,12 +78,12 @@
         </div>
         <div class="row m-0 col-12 p-0">
             <Field class="col-12">
-                <FieldLabel>Select Avtar</FieldLabel>
+                <FieldLabel>Select Avatar</FieldLabel>
                 <div class="row m-0 col-12 p-0">
                     <div class="col-9 p-0">
-                        @foreach (var item in avatars)
+                        @foreach (var avatar in avatars)
                         {
-                            <div class="avtar" @onclick="@(e => OnAvatarSelect(item))" style="background-color: @item;"></div>
+                            <div class="avatar" @onclick="@(e => OnAvatarSelect(avatar))" style="background-color: @avatar;"></div>
                         }
                     </div>
                     <div class="col-3 p-0 text-right">

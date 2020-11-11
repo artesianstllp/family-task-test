@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core
 {
@@ -8,11 +6,12 @@ namespace Core
     {
         public NotFoundException(string objectType, TIdentifier id)
         {
-            this.ObjectType = objectType;
-            this.Id = id;
+            ObjectType = objectType;
+            Id = id;
         }
 
         public string ObjectType { get; set; }
+
         public TIdentifier Id { get; set; }
     }
 }

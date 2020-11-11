@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Core;
 using Core.Abstractions.Services;
@@ -54,13 +52,13 @@ namespace WebApi.Controllers
             catch (NotFoundException<Guid>)
             {
                 return NotFound();
-            }            
+            }
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(GetAllMembersQueryResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
-        {            
+        {
             var result = await _memberService.GetAllMembersQueryHandler();
 
             return Ok(result);

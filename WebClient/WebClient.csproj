@@ -38,4 +38,9 @@
       <Content Remove="Domain\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Shared\Models\FamilyMember.cs" />
+      <Compile Remove="Shared\Models\TaskModel.cs" />
+    </ItemGroup>
+
 </Project>

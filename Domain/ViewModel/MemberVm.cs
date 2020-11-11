@@ -1,7 +1,5 @@
-﻿using Domain.Commands;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Domain.Commands;
 
 namespace Domain.ViewModel
 {

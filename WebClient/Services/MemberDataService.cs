@@ -1,32 +1,30 @@
-﻿using Domain.Commands;
-using Domain.Queries;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using WebClient.Abstractions;
-using Microsoft.AspNetCore.Components;
-using Domain.ViewModel;
 using Core.Extensions.ModelConversion;
+using Domain.Commands;
+using Domain.Queries;
+using Domain.ViewModel;
+using Microsoft.AspNetCore.Components;
+using WebClient.Abstractions;
 
 namespace WebClient.Services
 {
     public class MemberDataService : IMemberDataService
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient _httpClient;
+        private IEnumerable<MemberVm> _members;
         public MemberDataService(IHttpClientFactory clientFactory)
         {
-            httpClient = clientFactory.CreateClient("FamilyTaskAPI");
-            members = new List<MemberVm>();
+            _httpClient = clientFactory.CreateClient("FamilyTaskAPI");
+            _members = new List<MemberVm>();
             LoadMembers();
         }
-        private IEnumerable<MemberVm> members;
 
-        public IEnumerable<MemberVm> Members => members;
-
+        public IEnumerable<MemberVm> Members => _members;
         public MemberVm SelectedMember { get; private set; }
 
         public event EventHandler MembersChanged;
@@ -36,23 +34,23 @@ namespace WebClient.Services
 
         private async void LoadMembers()
         {
-            members = (await GetAllMembers()).Payload;
+            _members = (await GetAllMembers()).Payload;
             MembersChanged?.Invoke(this, null);
         }
 
         private async Task<CreateMemberCommandResult> Create(CreateMemberCommand command)
-        {            
-            return await httpClient.PostJsonAsync<CreateMemberCommandResult>("members", command);
+        {
+            return await _httpClient.PostJsonAsync<CreateMemberCommandResult>("members", command);
         }
 
         private async Task<GetAllMembersQueryResult> GetAllMembers()
         {
-            return await httpClient.GetJsonAsync<GetAllMembersQueryResult>("members");
+            return await _httpClient.GetJsonAsync<GetAllMembersQueryResult>("members");
         }
 
         private async Task<UpdateMemberCommandResult> Update(UpdateMemberCommand command)
         {
-            return await httpClient.PutJsonAsync<UpdateMemberCommandResult>($"members/{command.Id}", command);
+            return await _httpClient.PutJsonAsync<UpdateMemberCommandResult>($"members/{command.Id}", command);
         }
 
         public async Task UpdateMember(MemberVm model)
@@ -67,7 +65,7 @@ namespace WebClient.Services
 
                 if(updatedList != null)
                 {
-                    members = updatedList;
+                    _members = updatedList;
                     MembersChanged?.Invoke(this, null);
                     return;
                 }
@@ -86,21 +84,21 @@ namespace WebClient.Services
 
                 if (updatedList != null)
                 {
-                    members = updatedList;
+                    _members = updatedList;
                     MembersChanged?.Invoke(this, null);
                     return;
                 }
-                UpdateMemberFailed?.Invoke(this, "The creation was successful, but we can no longer get an updated list of members from the server.");
+                CreateMemberFailed?.Invoke(this, "The creation was successful, but we can no longer get an updated list of members from the server.");
             }
 
-            UpdateMemberFailed?.Invoke(this, "Unable to create record.");
+            CreateMemberFailed?.Invoke(this, "Unable to create record.");
         }
 
         public void SelectMember(Guid id)
         {
-            if (members.All(memberVm => memberVm.Id != id)) return;
+            if (_members.All(memberVm => memberVm.Id != id)) return;
             {
-                SelectedMember = members.SingleOrDefault(memberVm => memberVm.Id == id);
+                SelectedMember = _members.SingleOrDefault(memberVm => memberVm.Id == id);
                 SelectedMemberChanged?.Invoke(this, null);
             }
         }

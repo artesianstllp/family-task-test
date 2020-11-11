@@ -1,0 +1,18 @@
+﻿@using WebClient.Services
+@using Domain.ViewModel
+@inject DragAndDropService _dragAndDropService
+<div draggable="true" @ondragstart="@OnDragStart">
+    @ChildContent
+</div>
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public TaskVm Data { get; set; }
+
+    void OnDragStart()
+    {
+        _dragAndDropService.StartDrag(Data);
+    }
+}

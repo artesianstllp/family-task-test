@@ -2,6 +2,7 @@ using System;
 
 namespace Domain.ClientSideModels
 {
+    // Naming conventions not followed for this existing method
     public class MenuItem
     {
         public bool isActive {get; set;}
